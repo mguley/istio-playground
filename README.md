@@ -35,13 +35,22 @@ chmod +x istio-cluster-manager.sh
 
 ## Available Scenarios
 
-### [Scenario 1: Simple application](./scenario-01-simple-application/)
+### [Scenario 1: From Zero to Service Mesh](./scenario-01-simple-application/)
 
 Learn the basics of Istio by setting up a service mesh and deploying a simple application. This scenario demonstrates how to install Istio, deploy a basic application, and visualize the service mesh using Istio's observability tools.
 
 To begin this scenario:
 ```bash
 cd scenario-01-simple-application
+```
+
+### [Scenario 2: Traffic Management](./scenario-02-traffic-management/)
+
+Explore Istio's powerful traffic management capabilities. Deploy multiple versions of an application and implement sophisticated routing patterns, including traffic splitting, blue-green deployments, and canary releases. Learn how to control traffic flow with fine-grained precision without changing application code.
+
+To begin this scenario:
+```bash
+cd scenario-02-traffic-management
 ```
 
 ## Using the Cluster Manager
