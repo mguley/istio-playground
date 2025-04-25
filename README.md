@@ -53,6 +53,15 @@ To begin this scenario:
 cd scenario-02-traffic-management
 ```
 
+### [Scenario 3: Request-Based Routing](./scenario-03-request-routing/)
+
+Master advanced routing techniques by directing traffic based on HTTP headers, URI paths, and user identity. Implement sophisticated use cases like feature flagging, A/B testing specific user segments, API versioning, and traffic mirroring. Learn how to make routing decisions based on the content of requests for precise control over service access.
+
+To begin this scenario:
+```bash
+cd scenario-03-request-routing
+```
+
 ## Using the Cluster Manager
 
 The included `istio-cluster-manager.sh` script simplifies cluster and Istio management operations:

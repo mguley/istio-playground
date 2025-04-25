@@ -1,0 +1,53 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: color-service
+spec:
+  hosts:
+    - "*"
+  gateways:
+    - color-gateway
+  http:
+    # Rule 1: Mobile + Beta header -> Red (v3)
+    - match:
+        - headers:
+            user-agent:
+              regex: ".*Mobile.*|.*Android.*|.*iPhone.*|.*iPad.*"
+            x-beta:
+              exact: "true"
+      route:
+        - destination:
+            host: color-service
+            subset: v3
+            port:
+              number: 80
+    # Rule 2: Any Mobile -> Green (v2)
+    - match:
+        - headers:
+            user-agent:
+              regex: ".*Mobile.*|.*Android.*|.*iPhone.*|.*iPad.*"
+      route:
+        - destination:
+            host: color-service
+            subset: v2
+            port:
+              number: 80
+    # Rule 3: Special path -> Red (v3)
+    - match:
+        - uri:
+            prefix: "/special"
+      route:
+        - destination:
+            host: color-service
+            subset: v3
+            port:
+              number: 80
+      rewrite:
+        uri: "/"
+    # Default rule: Everything else -> Blue (v1)
+    - route:
+        - destination:
+            host: color-service
+            subset: v1
+            port:
+              number: 80
