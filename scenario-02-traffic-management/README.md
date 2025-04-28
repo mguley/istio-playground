@@ -230,7 +230,7 @@ Finally, let's create an Istio gateway to expose our application:
 
 ```bash
 cat > color-gateway.yaml << 'EOF'
-apiVersion: networking.istio.io/v1alpha3
+apiVersion: networking.istio.io/v1
 kind: Gateway
 metadata:
   name: color-gateway
@@ -273,7 +273,7 @@ First, let's create a DestinationRule that defines the subsets for our different
 
 ```bash
 cat > destination-rule.yaml << 'EOF'
-apiVersion: networking.istio.io/v1alpha3
+apiVersion: networking.istio.io/v1
 kind: DestinationRule
 metadata:
   name: color-service
@@ -301,7 +301,7 @@ Now, let's create a VirtualService that routes all traffic to the `v1 (blue)` ve
 
 ```bash
 cat > virtual-service-v1.yaml << 'EOF'
-apiVersion: networking.istio.io/v1alpha3
+apiVersion: networking.istio.io/v1
 kind: VirtualService
 metadata:
   name: color-service
@@ -351,7 +351,7 @@ Apply the updated VirtualService:
 
 ```bash
 cat > virtual-service-split.yaml << 'EOF'
-apiVersion: networking.istio.io/v1alpha3
+apiVersion: networking.istio.io/v1
 kind: VirtualService
 metadata:
   name: color-service
@@ -412,7 +412,7 @@ Let's simulate shifting traffic gradually from `v1 (blue)` to `v2 (green)`:
 
 ```bash
 cat > virtual-service-shift-90-10.yaml << 'EOF'
-apiVersion: networking.istio.io/v1alpha3
+apiVersion: networking.istio.io/v1
 kind: VirtualService
 metadata:
   name: color-service
@@ -457,7 +457,7 @@ http://localhost:8080/
 
 ```bash
 cat > virtual-service-shift-75-25.yaml << 'EOF'
-apiVersion: networking.istio.io/v1alpha3
+apiVersion: networking.istio.io/v1
 kind: VirtualService
 metadata:
   name: color-service
@@ -502,7 +502,7 @@ http://localhost:8080/
 
 ```bash
 cat > virtual-service-shift-50-50.yaml << 'EOF'
-apiVersion: networking.istio.io/v1alpha3
+apiVersion: networking.istio.io/v1
 kind: VirtualService
 metadata:
   name: color-service
@@ -547,7 +547,7 @@ http://localhost:8080/
 
 ```bash
 cat > virtual-service-shift-25-75.yaml << 'EOF'
-apiVersion: networking.istio.io/v1alpha3
+apiVersion: networking.istio.io/v1
 kind: VirtualService
 metadata:
   name: color-service
@@ -592,7 +592,7 @@ http://localhost:8080/
 
 ```bash
 cat > virtual-service-shift-0-100.yaml << 'EOF'
-apiVersion: networking.istio.io/v1alpha3
+apiVersion: networking.istio.io/v1
 kind: VirtualService
 metadata:
   name: color-service
@@ -641,7 +641,7 @@ With Istio, this pattern becomes a simple configuration change:
 
 ```bash
 cat > virtual-service-v1.yaml << 'EOF'
-apiVersion: networking.istio.io/v1alpha3
+apiVersion: networking.istio.io/v1
 kind: VirtualService
 metadata:
   name: color-service
@@ -670,7 +670,7 @@ kubectl apply -f virtual-service-v1.yaml
 
 ```bash
 cat > virtual-service-v2.yaml << 'EOF'
-apiVersion: networking.istio.io/v1alpha3
+apiVersion: networking.istio.io/v1
 kind: VirtualService
 metadata:
   name: color-service
@@ -719,7 +719,7 @@ For our demonstration, we'll simulate a canary deployment using manual steps:
 
 ```bash
 cat > virtual-service-canary-start.yaml << 'EOF'
-apiVersion: networking.istio.io/v1alpha3
+apiVersion: networking.istio.io/v1
 kind: VirtualService
 metadata:
   name: color-service
@@ -747,7 +747,7 @@ EOF
 
 ```bash
 cat > virtual-service-canary-increase.yaml << 'EOF'
-apiVersion: networking.istio.io/v1alpha3
+apiVersion: networking.istio.io/v1
 kind: VirtualService
 metadata:
   name: color-service
@@ -775,7 +775,7 @@ EOF
 
 ```bash
 cat > virtual-service-canary-complete.yaml << 'EOF'
-apiVersion: networking.istio.io/v1alpha3
+apiVersion: networking.istio.io/v1
 kind: VirtualService
 metadata:
   name: color-service

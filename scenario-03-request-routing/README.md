@@ -238,7 +238,7 @@ Finally, let's create an Istio gateway to expose our application:
 
 ```bash
 cat > color-gateway.yaml << 'EOF'
-apiVersion: networking.istio.io/v1alpha3
+apiVersion: networking.istio.io/v1
 kind: Gateway
 metadata:
   name: color-gateway
@@ -264,7 +264,7 @@ And let's define our destination rule that creates the subsets for each version:
 
 ```bash
 cat > destination-rule.yaml << 'EOF'
-apiVersion: networking.istio.io/v1alpha3
+apiVersion: networking.istio.io/v1
 kind: DestinationRule
 metadata:
   name: color-service
@@ -309,7 +309,7 @@ Let's create a routing rule that directs `mobile` users to the `green version (v
 
 ```bash
 cat > virtual-service-user-agent.yaml << 'EOF'
-apiVersion: networking.istio.io/v1alpha3
+apiVersion: networking.istio.io/v1
 kind: VirtualService
 metadata:
   name: color-service
@@ -369,7 +369,7 @@ Let's try another header-based rule, this time using a custom header to enable a
 
 ```bash
 cat > virtual-service-custom-header.yaml << 'EOF'
-apiVersion: networking.istio.io/v1alpha3
+apiVersion: networking.istio.io/v1
 kind: VirtualService
 metadata:
   name: color-service
@@ -423,7 +423,7 @@ Let's create a routing rule that directs requests to different versions based on
 
 ```bash
 cat > virtual-service-uri.yaml << 'EOF'
-apiVersion: networking.istio.io/v1alpha3
+apiVersion: networking.istio.io/v1
 kind: VirtualService
 metadata:
   name: color-service
@@ -493,7 +493,7 @@ Let's create a routing rule that directs `"premium" users` (identified by a cook
 
 ```bash
 cat > virtual-service-cookie.yaml << 'EOF'
-apiVersion: networking.istio.io/v1alpha3
+apiVersion: networking.istio.io/v1
 kind: VirtualService
 metadata:
   name: color-service
@@ -548,7 +548,7 @@ Let's create a routing rule that sends all traffic to the `blue version (v1)` bu
 
 ```bash
 cat > virtual-service-mirror.yaml << 'EOF'
-apiVersion: networking.istio.io/v1alpha3
+apiVersion: networking.istio.io/v1
 kind: VirtualService
 metadata:
   name: color-service
@@ -617,7 +617,7 @@ Let's create a complex routing rule that combines multiple conditions:
 
 ```bash
 cat > virtual-service-combined.yaml << 'EOF'
-apiVersion: networking.istio.io/v1alpha3
+apiVersion: networking.istio.io/v1
 kind: VirtualService
 metadata:
   name: color-service
