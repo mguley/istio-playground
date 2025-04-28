@@ -171,7 +171,7 @@ Let's create a file called `hello-world-gateway.yaml`:
 
 ```bash
 cat > hello-world-gateway.yaml << 'EOF'
-apiVersion: networking.istio.io/v1alpha3
+apiVersion: networking.istio.io/v1
 kind: Gateway
 metadata:
   name: hello-world-gateway
@@ -186,7 +186,7 @@ spec:
     hosts:
     - "*"
 ---
-apiVersion: networking.istio.io/v1alpha3
+apiVersion: networking.istio.io/v1
 kind: VirtualService
 metadata:
   name: hello-world
