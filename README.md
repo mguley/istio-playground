@@ -62,6 +62,15 @@ To begin this scenario:
 cd scenario-03-request-routing
 ```
 
+### [Scenario 4: Resiliency Patterns](./scenario-04-resiliency-patterns/)
+
+Learn how to implement resilience in your microservice architecture using Istio. Explore patterns like timeouts, retries, circuit breakers, outlier detection, and fault injection to create robust systems that can withstand failures. This scenario demonstrates how to build applications that gracefully handle network failures, service crashes, and unexpected delays without modifying application code.
+
+To begin this scenario:
+```bash
+cd scenario-04-resiliency-patterns
+```
+
 ## Using the Cluster Manager
 
 The included `istio-cluster-manager.sh` script simplifies cluster and Istio management operations:

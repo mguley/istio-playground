@@ -1,0 +1,51 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: product
+  labels:
+    app: product
+    service: product
+spec:
+  ports:
+    - port: 80
+      targetPort: 9090
+      name: http
+  selector:
+    app: product
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: product
+  labels:
+    app: product
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: product
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: product
+        version: v1
+    spec:
+      containers:
+        - name: product
+          image: ghcr.io/nicholasjackson/fake-service:v0.26.2
+          env:
+            - name: NAME
+              value: "product"
+            - name: UPSTREAM_URIS       # sequential → fine for demo
+              value: "http://pricing,http://inventory"
+          ports:
+            - containerPort: 9090
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "200m"
+              memory: "256Mi"
