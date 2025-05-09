@@ -1,0 +1,61 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: traffic-generator
+spec:
+  template:
+    metadata:
+      labels:
+        app: traffic-generator
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: traffic
+          image: pstauffer/curl
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              echo "Starting traffic generation..."
+              total_requests=50
+              success=0
+              errors=0
+              timeouts=0
+              
+              overall_start=$(date +%s.%N)
+              
+              for i in $(seq 1 $total_requests); do
+                echo "Request $i of $total_requests"
+              
+                req_start=$(date +%s.%N)
+                code=$(curl -o /dev/null -s -w "%{http_code}" --max-time 5 http://frontend/)
+                req_end=$(date +%s.%N)
+              
+                req_time=$(echo "$req_end $req_start" | awk '{printf "%.3f", $1-$2}')
+              if [ "$code" -eq 200 ]; then
+                echo "  Success ($code) in ${req_time}s"
+                success=$((success+1))
+              elif [ "$code" -eq 000 ]; then
+                echo "  Timeout after ${req_time}s"
+                timeouts=$((timeouts+1))
+              else
+                echo "  Error: $code in ${req_time}s"
+                errors=$((errors+1))
+              fi
+              
+              sleep 0.5
+              done
+              
+              overall_end=$(date +%s.%N)
+              total_time=$(echo "$overall_end $overall_start" | awk '{printf "%.3f", $1-$2}')
+              
+              pct () { echo "$1 $total_requests" | awk '{printf "%.2f", ($1*100)/$2}'; }
+              
+              echo
+              echo "Results:"
+              echo "  Total requests: $total_requests"
+              echo "  Successful: $success ($(pct $success)%)"
+              echo "  Errors: $errors ($(pct $errors)%)"
+              echo "  Timeouts: $timeouts ($(pct $timeouts)%)"
+              echo "  Total time: ${total_time}s"
+              echo "Traffic generation complete."
+  backoffLimit: 1

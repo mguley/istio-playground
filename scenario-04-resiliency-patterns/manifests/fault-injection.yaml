@@ -1,0 +1,33 @@
+apiVersion: networking.istio.io/v1
+kind: VirtualService
+metadata:
+  name: inventory-fault
+spec:
+  hosts:
+    - inventory
+  http:
+    - fault:
+        delay:
+          percentage:
+            value: 10
+          fixedDelay: 2s
+      route:
+        - destination:
+            host: inventory
+---
+apiVersion: networking.istio.io/v1
+kind: VirtualService
+metadata:
+  name: pricing-fault
+spec:
+  hosts:
+    - pricing
+  http:
+    - fault:
+        abort:
+          percentage:
+            value: 5
+          httpStatus: 500
+      route:
+        - destination:
+            host: pricing

@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: inventory-failing
+  labels:
+    app: inventory
+    version: failing
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: inventory
+      version: failing
+  template:
+    metadata:
+      labels:
+        app: inventory
+        version: failing
+    spec:
+      containers:
+        - name: inventory
+          image: ghcr.io/nicholasjackson/fake-service:v0.26.2
+          env:
+            - name: NAME
+              value: "inventory"
+            # 90% of requests will return an error
+            - name: ERROR_RATE
+              value: "0.9"    # 90%
+            - name: ERROR_TYPE
+              value: "http_error"
+            - name: ERROR_CODE
+              value: "500"
+          ports:
+            - containerPort: 9090
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "200m"
+              memory: "256Mi"

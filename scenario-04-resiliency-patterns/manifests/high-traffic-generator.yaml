@@ -1,0 +1,79 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: high-traffic-generator
+spec:
+  template:
+    metadata:
+      labels:
+        app: traffic-generator
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: traffic
+          image: xr09/alpine-bash:latest      # Bash + curl ready to go
+          command: ["bash", "-c"]
+          args:
+            - |
+              set -euo pipefail
+              
+              # ─── Wait for Envoy ─────────────────────────────────────────────
+              echo "Waiting for Envoy sidecar to be ready…"
+              until curl -s -f -o /dev/null 127.0.0.1:15021/healthz/ready; do
+                sleep 1
+              done
+              echo "Envoy is ready."
+              
+              # ─── Load‑test parameters ───────────────────────────────────────              
+              total=200          # total requests
+              concurrency=20     # max parallel curls
+              url=http://frontend/
+              
+              echo "Starting high‑volume traffic generation (${total} req, ${concurrency} parallel)…"
+              
+              one() {
+                resp=$(curl -s -w '\n%{http_code}' --max-time 5 "$url")
+                code=$(tail -n1 <<<"$resp")
+                body=$(sed '$d' <<<"$resp")
+              
+                if   [ "$code" -eq 200 ];          then echo OK
+                elif [ "$code" -eq 000 ];          then echo TIMEOUT
+                elif [ "$code" -eq 500 ];          then echo CBOPEN       # breaker
+                elif grep -qiE 'overflow|circuit' <<<"$body"; then echo CBOPEN
+                else                                       echo ERR
+                fi
+              }
+              
+              export -f one         # export the *function*
+              export url            # export the *variable*
+              
+              results=/tmp/results
+              : >"$results"         # truncate / create
+              
+              running=0
+              for i in $(seq 1 "$total"); do
+                bash -c one >>"$results" &
+                running=$((running+1))
+                if [ "$running" -ge "$concurrency" ]; then
+                  wait -n
+                  running=$((running-1))
+                fi
+              done
+              wait
+              
+              ok=$(grep -c '^OK$'       "$results" || true)
+              err=$(grep -c '^ERR$'     "$results" || true)
+              tmo=$(grep -c '^TIMEOUT$' "$results" || true)
+              cbo=$(grep -c '^CBOPEN$'  "$results" || true)
+              
+              pct() { awk -v n="$1" -v t="$total" 'BEGIN{printf "%.2f", (n*100)/t}'; }
+              
+              echo
+              echo "Results:"
+              echo "  Total requests: $total"
+              echo "  Successful:   $ok  ($(pct "$ok")%)"
+              echo "  Errors:       $err ($(pct "$err")%)"
+              echo "  Timeouts:     $tmo ($(pct "$tmo")%)"
+              echo "  Circuit open: $cbo ($(pct "$cbo")%)"
+              echo "Traffic generation complete."
+  backoffLimit: 1

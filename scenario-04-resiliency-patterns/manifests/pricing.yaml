@@ -1,0 +1,56 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: pricing
+  labels:
+    app: pricing
+    service: pricing
+spec:
+  ports:
+    - port: 80
+      targetPort: 9090
+      name: http
+  selector:
+    app: pricing
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pricing
+  labels:
+    app: pricing
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pricing
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: pricing
+        version: v1
+    spec:
+      containers:
+        - name: pricing
+          image: ghcr.io/nicholasjackson/fake-service:v0.26.2
+          env:
+            - name: NAME
+              value: "pricing"
+            # 40% of calls wait 3s → client time‑out candidate
+            - name: ERROR_RATE
+              value: "0.4"        # 40%
+            - name: ERROR_TYPE
+              value: "delay"
+            - name: ERROR_DELAY
+              value: "3s"
+          ports:
+            - containerPort: 9090
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "200m"
+              memory: "256Mi"

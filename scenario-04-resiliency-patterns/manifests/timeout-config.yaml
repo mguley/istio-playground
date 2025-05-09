@@ -1,0 +1,25 @@
+apiVersion: networking.istio.io/v1
+kind: VirtualService
+metadata:
+  name: pricing
+spec:
+  hosts:
+    - pricing
+  http:
+    - route:
+        - destination:
+            host: pricing
+      timeout: 1s
+---
+apiVersion: networking.istio.io/v1
+kind: VirtualService
+metadata:
+  name: inventory
+spec:
+  hosts:
+    - inventory
+  http:
+    - route:
+        - destination:
+            host: inventory
+      timeout: 0.5s
